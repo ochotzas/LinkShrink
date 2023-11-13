@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <title>LinkShrink - URL Shortener</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1f1f1f;
+            color: #ffffff;
+        }
+
+        .brand-color {
+            color: #e74c3c;
+        }
+
+        .bg-brand {
+            background-color: #e74c3c;
+        }
+
+        .info-text {
+            color: #bdc3c7;
+        }
+
+        .input-group {
+            border: 1px solid #3a3a3a;
+        {% if short_url %}
+            border-radius: 8px 8px 0 0;
+        {% else %}
+            border-radius: 8px;
+        {% endif %}
+            overflow: hidden;
+        }
+
+        .input-group input {
+            width: 80%;
+            padding: 12px;
+            border: none;
+            outline: none;
+            background-color: #333;
+            color: #fff;
+        }
+
+        .input-group button {
+            width: 20%;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 0;
+        }
+
+        .shortened-link {
+            background-color: #333;
+            border-radius: 0 0 12px 12px;
+            padding: 16px;
+        }
+
+        .copy-button {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 12px;
+            border: none;
+            border-radius: 200px;
+            cursor: pointer;
+        }
+
+        .copy-button:hover {
+            background-color: #c0392b;
+        }
+
+        .notification {
+            display: none;
+            background-color: #43a047;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 200px;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            animation: fadeIn 0.5s forwards;
+        }
+
+        .hero {
+            background-color: #1f1f1f;
+            color: #fff;
+            padding: 80px 0;
+            text-align: center;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .cta-button span {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+<div class="hero">
+    <h1 class="text-3xl font-semibold brand-color mb-6">
+        LinkShrink <i class="fas fa-link"></i>
+    </h1>
+    <p class="text-lg info-text mb-4">
+        The coolest way to shrink your links and share them hassle-free!<br/>No account needed, just shrink and go!
+    </p>
+</div>
+
+<div class="p-8 max-w-xl mx-auto mt-12">
+    <form method="post">
+        {{ form.hidden_tag() }}
+        <div class="input-group flex">
+            {{ form.url(class="flex-grow p-3 text-white placeholder-gray-500 bg-gray-700 border border-gray-600
+            focus:outline-none focus:shadow-outline") }}
+            <button class="bg-brand text-white py-3 px-4 border border-gray-600 rounded-r-md focus:outline-none focus:shadow-outline hover:bg-gray-600 transition-colors duration-300"
+                    type="submit">
+                <i class="fas fa-compress"></i>
+            </button>
+        </div>
+    </form>
+
+    {% if short_url %}
+    <div class="shortened-link p-6">
+        <p class="text-white text-lg mb-2">
+            <span class="brand-color">Awesome!</span> Your link has been transformed:
+        </p>
+        <div class="flex flex-wrap items-center mb-4">
+            <a class="break-all text-gray-400 text-lg hover:text-gray-300" href="{{ short_url }}">
+                <i class="fas fa-link text-gray-400 mr-2"></i>
+                {{ short_url }}
+            </a>
+            <button class="copy-button bg-white text-brand py-3 px-4 rounded-md focus:outline-none focus:shadow-outline left-0 ml-auto hover:bg-gray-600 transition-colors duration-300"
+                    onclick="copyToClipboard('{{ short_url }}')" type="button">
+                <i class="far fa-copy mr-2"></i> Copy
+            </button>
+        </div>
+        <div class="notification" id="notification">
+            Copied to Clipboard! <i class="fas fa-check-circle"></i>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if has_user_urls %}
+    <div class="fixed top-0 right-0 m-8">
+        <a class="bg-brand text-white py-3 px-6 rounded-full text-lg focus:outline-none focus:shadow-outline hover:bg-gray-600 transition-colors duration-300"
+           href="/user">
+            <i class="fas fa-list mr-2"></i> Shortened
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    function copyToClipboard(text) {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        const notification = document.getElementById('notification');
+        notification.style.display = 'block';
+
+        setTimeout(function () {
+            notification.style.animation = 'fadeOut 0.5s forwards';
+            setTimeout(function () {
+                notification.style.display = 'none';
+                notification.style.animation = 'none';
+            }, 500);
+        }, 3000);
+    }
+</script>
+</body>
+
+</html>

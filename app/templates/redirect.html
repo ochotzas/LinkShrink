@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="3;url={{ original_url }}" http-equiv="refresh">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1f1f1f; /* Dark Gray */
+            color: #ffffff; /* White */
+            text-align: center;
+            padding: 80px 20px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh; /* Ensure full height */
+        }
+
+        a {
+            color: #e74c3c; /* Red */
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .rotate {
+            font-size: 2rem;
+            margin-right: 10px;
+            animation: rotate 2s infinite linear;
+        }
+
+        p {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        .brand-color {
+            color: #e74c3c; /* Red */
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Glowing Link Animation */
+        @keyframes glow {
+            0% {
+                color: #e74c3c;
+                text-shadow: 0 0 10px #e74c3c, 0 0 20px #e74c3c, 0 0 30px #e74c3c;
+            }
+            50% {
+                color: #ffffff;
+                text-shadow: none;
+            }
+            100% {
+                color: #e74c3c;
+                text-shadow: 0 0 10px #e74c3c, 0 0 20px #e74c3c, 0 0 30px #e74c3c;
+            }
+        }
+
+        .glow-link {
+            animation: glow 1s infinite;
+        }
+
+        /* Stylish visit count for the creator */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .visit-count {
+            margin-top: auto;
+            opacity: 0;
+            animation: fadeInUp 1s forwards;
+        }
+
+        .visit-count div {
+            background-color: #2f2f2f; /* Darker Gray */
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .visit-count i {
+            margin-right: 5px;
+        }
+    </style>
+    <title>Redirecting...</title>
+</head>
+<body>
+<h1 class="text-5xl font-bold brand-color animated-text"><i class="fas fa-link rotate"></i>&nbsp;LinkShrink</h1>
+<p class="brand-color animated-text">
+    Redirecting to <a class="glow-link" href="{{ original_url }}">{{ original_url[:24] + '...' }}</a>
+</p>
+
+<!-- Stylish visit count for the creator -->
+{% if is_creator %}
+<div class="visit-count">
+    <div>
+        <i class="fas fa-eye brand-color"></i>
+        <span class="font-bold text-white">&nbsp;Visit Count:&nbsp;</span> {{ visit_count }}
+    </div>
+</div>
+{% endif %}
+</body>
+</html>

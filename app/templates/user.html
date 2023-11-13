@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <title>LinkShrink - URL Shortener</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1f1f1f;
+            color: #ffffff;
+        }
+
+        .brand-color {
+            color: #e74c3c;
+        }
+
+        .user-page {
+            background-color: #1f1f1f;
+            color: #ffffff;
+            padding: 80px 0;
+            text-align: center;
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .shortened-link {
+            background-color: #333;
+            border-radius: 12px;
+            padding: 16px 0 0 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .shortened-link:hover {
+            transform: scale(1.02);
+        }
+
+        .link-icon {
+            color: #e74c3c;
+        }
+
+        .visit-count {
+            color: #27ae60;
+        }
+
+        .status {
+            color: #e74c3c;
+        }
+
+        .date-to-expire {
+            background-color: #2f2f2f;
+            border-radius: 0 0 12px 12px;
+            font-size: large;
+            padding: 16px;
+        }
+    </style>
+</head>
+
+<body>
+<script>
+    // Redirect to home if the user has no shortened URLs
+    if (!{{ urls|length }}) {
+        window.location.replace('/');
+    }
+</script>
+
+<div class="user-page">
+    <h1 class="text-3xl font-semibold brand-color mb-6">
+        LinkShrink <i class="fas fa-link"></i>
+    </h1>
+    <p class="text-lg mb-4">
+        Your Shortened URLs
+    </p>
+</div>
+
+<div class="p-8 max-w-xl mx-auto mt-12">
+    {% for url, url_info in urls.items() %}
+    <div class="shortened-link mb-4">
+        <p class="text-lg mb-2 mb-2 ml-4 mr-4">
+            <i class="fas fa-link link-icon mr-2"></i>
+            <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">
+                {{ url }}
+            </a>
+        </p>
+        <p class="text-lg mb-2 ml-4 mr-4">
+            <i class="fas fa-external-link-alt link-icon mr-2"></i>
+            <a href="{{ url_info[UrlProperties.ORIGINAL_URL.value] }}" target="_blank" rel="noopener noreferrer"
+               class="text-gray-300 hover:underline">
+                {{ url_info[UrlProperties.ORIGINAL_URL.value][:27] + '...' }}
+            </a>
+        </p>
+        <p class="text-lg mb-2 visit-count mb-2 ml-4 mr-4">
+            <i class="fas fa-eye link-icon mr-2"></i>
+            Visit Count: {{ url_info[UrlProperties.VISITS.value] }}
+        </p>
+        {% if url_info.get(UrlProperties.EXPIRED.value, False) %}
+        <p class="text-lg mb-2 status mb-2 ml-4 mr-4 pb-4">
+            <i class="fas fa-exclamation-circle link-icon mr-2"></i>
+            Status: Expired
+        </p>
+        {% endif %}
+        {% if not url_info.get(UrlProperties.EXPIRED.value, False) %}
+        <div class="date-to-expire">
+            <i class="fas fa-calendar-day link-icon mr-2"></i>
+            Expires on {{ url_info[UrlProperties.EXPIRATION_TIME.value] }}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+</body>
+
+</html>

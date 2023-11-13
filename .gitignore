@@ -1,0 +1,9 @@
+/shelf/
+/workspace.xml
+/httpRequests/
+/dataSources/
+/dataSources.local.xml
+
+venv
+logs
+app/db
