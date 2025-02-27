@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /$
+Allow: /static/
+Disallow: /expired
+Disallow: /redirect
+Disallow: /r/
+Disallow: /user
+Disallow: /api/
+
+# Sitemap declaration
+Sitemap: https://shrink.ochotzas.com/sitemap.xml

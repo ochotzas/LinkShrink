@@ -1,119 +1,707 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="h-full overflow-x-hidden">
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <title>LinkShrink - URL Shortener</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1f1f1f;
-            color: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <meta name="description" content="LinkShrink - Your shortened URL history">
+  <meta name="keywords" content="URL shortener, link shortening, short links, LinkShrink, URL management">
+  <meta name="robots" content="noindex, follow">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <title>Your Links | LinkShrink</title>
+  <style>
+    :root {
+      --background: #f8f9fc;
+      --foreground: #374151;
+      --card: #ffffff;
+      --card-foreground: #1f2937;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #334155;
+      --muted: #e2e8f0;
+      --muted-foreground: #64748b;
+      --accent: #ede9fe;
+      --accent-foreground: #7c3aed;
+      --border: #e2e8f0;
+      --input: #f8fafc;
+      --ring: rgba(99, 102, 241, 0.5);
+      --gold: #d4a45f;
+      --gold-light: #e9c989;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      position: relative;
+      background-image: 
+        radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.03) 0%, transparent 45%);
+    }
+    
+    .premium-card {
+      background-color: var(--card);
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .premium-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #6366f1);
+      opacity: 0.8;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .premium-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      height: 2.5rem;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      transition: all 0.2s ease;
+      position: relative;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+    }
+    
+    .premium-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(99, 102, 241, 0.35);
+    }
+    
+    .secondary-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      height: 2.5rem;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      transition: all 0.2s ease;
+      background-color: var(--secondary);
+      color: var(--secondary-foreground);
+      border: 1px solid var(--border);
+    }
+    
+    .secondary-button:hover {
+      background-color: var(--muted);
+      transform: translateY(-1px);
+    }
+    
+    .danger-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      height: 2.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      transition: all 0.2s ease;
+      color: #ef4444;
+      background-color: #fee2e2;
+    }
+    
+    .danger-button:hover {
+      background-color: #fecaca;
+      transform: translateY(-1px);
+    }
 
-        .brand-color {
-            color: #e74c3c;
-        }
+    .icon-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      transition: all 0.15s ease;
+      background-color: var(--secondary);
+    }
+    
+    .icon-button:hover {
+      background-color: var(--muted);
+      transform: translateY(-1px);
+    }
+    
+    .decorative-circle {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.03;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      pointer-events: none;
+    }
+    
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .shimmer::after {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      right: -100%;
+      bottom: -100%;
+      background: linear-gradient(
+        135deg,
+        transparent 0%,
+        transparent 25%,
+        rgba(255, 255, 255, 0.2) 45%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.2) 55%,
+        transparent 75%,
+        transparent 100%
+      );
+      animation: shimmerAnimation 4s infinite;
+      transform: rotate(25deg);
+    }
+    
+    @keyframes shimmerAnimation {
+      0% { transform: translateX(-200%) rotate(25deg); }
+      100% { transform: translateX(200%) rotate(25deg); }
+    }
+    
+    .pulse-glow {
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+    
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+      50% { box-shadow: 0 0 20px 5px rgba(99, 102, 241, 0.2); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+    }
+    
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: -0.02em;
+    }
+    
+    .result-box {
+      background-color: var(--accent);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+    
+    .result-box:hover {
+      box-shadow: var(--shadow-md);
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      width: 100%;
+      padding: 2rem 1rem;
+      max-width: 64rem;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    
+    .truncate-text {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    .link-item {
+      transition: all 0.15s ease;
+      border-bottom: 1px solid var(--border);
+    }
+    
+    .link-item:last-child {
+      border-bottom: none;
+    }
+    
+    .link-item:hover {
+      background-color: var(--secondary);
+    }
 
-        .user-page {
-            background-color: #1f1f1f;
-            color: #ffffff;
-            padding: 80px 0;
-            text-align: center;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--muted-foreground);
+    }
 
-        .shortened-link {
-            background-color: #333;
-            border-radius: 12px;
-            padding: 16px 0 0 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
-        }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      font-weight: 500;
+      line-height: 1;
+      font-size: 0.75rem;
+      height: 1.25rem;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+    }
 
-        .shortened-link:hover {
-            transform: scale(1.02);
-        }
+    .badge-green {
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
 
-        .link-icon {
-            color: #e74c3c;
-        }
+    .badge-blue {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
 
-        .visit-count {
-            color: #27ae60;
-        }
+    .badge-gray {
+      background-color: #f3f4f6;
+      color: #4b5563;
+    }
 
-        .status {
-            color: #e74c3c;
-        }
-
-        .date-to-expire {
-            background-color: #2f2f2f;
-            border-radius: 0 0 12px 12px;
-            font-size: large;
-            padding: 16px;
-        }
-    </style>
+    @keyframes slideUpAndFade {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 15px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+    
+    .notification-enter {
+      animation: slideUpAndFade 0.3s ease-out;
+    }
+    
+    @media (max-width: 640px) {
+      .premium-card::before {
+        height: 4px;
+      }
+      
+      .app-container {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
+      
+      .decorative-circle {
+        opacity: 0.02;
+      }
+    }
+    
+    .expired-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      font-weight: 500;
+      line-height: 1;
+      font-size: 0.75rem;
+      height: 1.5rem;
+      padding-left: 0.625rem;
+      padding-right: 0.625rem;
+      background-color: #fee2e2;
+      color: #ef4444;
+    }
+    
+    .active-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      font-weight: 500;
+      line-height: 1;
+      font-size: 0.75rem;
+      height: 1.5rem;
+      padding-left: 0.625rem;
+      padding-right: 0.625rem;
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+    
+    .url-card {
+      transition: all 0.2s ease;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background-color: var(--card);
+      border: 1px solid var(--border);
+    }
+    
+    .url-card.expired {
+      opacity: 0.7;
+    }
+    
+    .meta-info {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+    }
+    
+    @media (max-width: 640px) {
+      .meta-info {
+        gap: 0.5rem;
+      }
+    }
+    
+    .url-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+    
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background-color: rgba(255, 255, 255, 0.7);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.6);
+      padding: 0.75rem 1rem;
+      margin-bottom: 2rem;
+      width: 100%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 640px) {
+      .navbar {
+        padding: 0.75rem 0.75rem;
+      }
+      
+      .navbar .secondary-button {
+        font-size: 0.8rem;
+      }
+    }
+    
+    .expired-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      font-weight: 500;
+      line-height: 1;
+      font-size: 0.75rem;
+      height: 1.5rem;
+      padding-left: 0.625rem;
+      padding-right: 0.625rem;
+      background-color: #fee2e2;
+      color: #ef4444;
+    }
+    
+    .active-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 9999px;
+      font-weight: 500;
+      line-height: 1;
+      font-size: 0.75rem;
+      height: 1.5rem;
+      padding-left: 0.625rem;
+      padding-right: 0.625rem;
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+    
+    .url-card {
+      transition: all 0.2s ease;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background-color: var(--card);
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+    }
+    
+    .url-card.expired {
+      opacity: 0.8;
+      background-color: #fafafa;
+    }
+    
+    .meta-info {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      color: var(--muted-foreground);
+      font-size: 0.75rem;
+    }
+    
+    .url-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .url-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--muted-foreground);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.25rem;
+    }
+    
+    .url-text {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: calc(100% - 30px);
+      display: inline-block;
+    }
+    
+    .original-url {
+      font-size: 0.875rem;
+      color: var(--muted-foreground);
+      word-break: break-all;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 2.8rem;
+    }
+    
+    .app-container {
+      padding-top: 0;
+    }
+    
+    @media (max-width: 640px) {
+      .meta-info {
+        gap: 0.5rem;
+      }
+      
+      .url-card {
+        padding: 0.75rem !important;
+      }
+      
+      .url-text {
+        max-width: calc(100% - 25px);
+        font-size: 0.875rem;
+      }
+      
+      .original-url {
+        font-size: 0.8125rem;
+        -webkit-line-clamp: 3;
+        max-height: 3.6rem;
+      }
+    }
+    
+    #notification {
+      z-index: 999999 !important;
+      position: fixed;
+      isolation: isolate;
+      transform: translate(-50%, 0);
+    }
+  </style>
 </head>
 
-<body>
-<script>
-    // Redirect to home if the user has no shortened URLs
-    if (!{{ urls|length }}) {
-        window.location.replace('/');
-    }
-</script>
-
-<div class="user-page">
-    <h1 class="text-3xl font-semibold brand-color mb-6">
-        LinkShrink <i class="fas fa-link"></i>
-    </h1>
-    <p class="text-lg mb-4">
-        Your Shortened URLs
-    </p>
-</div>
-
-<div class="p-8 max-w-xl mx-auto mt-12">
-    {% for url, url_info in urls.items() %}
-    <div class="shortened-link mb-4">
-        <p class="text-lg mb-2 mb-2 ml-4 mr-4">
-            <i class="fas fa-link link-icon mr-2"></i>
-            <a href="{{ url }}" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:underline">
-                {{ url }}
-            </a>
-        </p>
-        <p class="text-lg mb-2 ml-4 mr-4">
-            <i class="fas fa-external-link-alt link-icon mr-2"></i>
-            <a href="{{ url_info[UrlProperties.ORIGINAL_URL.value] }}" target="_blank" rel="noopener noreferrer"
-               class="text-gray-300 hover:underline">
-                {{ url_info[UrlProperties.ORIGINAL_URL.value][:27] + '...' }}
-            </a>
-        </p>
-        <p class="text-lg mb-2 visit-count mb-2 ml-4 mr-4">
-            <i class="fas fa-eye link-icon mr-2"></i>
-            Visit Count: {{ url_info[UrlProperties.VISITS.value] }}
-        </p>
-        {% if url_info.get(UrlProperties.EXPIRED.value, False) %}
-        <p class="text-lg mb-2 status mb-2 ml-4 mr-4 pb-4">
-            <i class="fas fa-exclamation-circle link-icon mr-2"></i>
-            Status: Expired
-        </p>
-        {% endif %}
-        {% if not url_info.get(UrlProperties.EXPIRED.value, False) %}
-        <div class="date-to-expire">
-            <i class="fas fa-calendar-day link-icon mr-2"></i>
-            Expires on {{ url_info[UrlProperties.EXPIRATION_TIME.value] }}
-        </div>
-        {% endif %}
+<body class="antialiased h-full">
+  <div class="decorative-circle" style="width: 300px; height: 300px; top: -100px; right: -50px;"></div>
+  <div class="decorative-circle" style="width: 350px; height: 350px; bottom: -100px; left: -100px;"></div>
+  
+  <div class="navbar">
+    <div class="max-w-6xl mx-auto flex items-center justify-between w-full">
+        
+      <a href="/" class="flex items-center space-x-3">
+        <span class="logo-text text-xl font-bold text-gray-800">LinkShrink</span>
+        <span class="text-gray-600 font-medium border-l border-gray-200 pl-3 ml-2">Shortened Links</span>
+      </a>
+      
+      <a href="/" class="secondary-button text-sm py-1 px-3 h-auto">
+        Home
+      </a>
     </div>
-    {% endfor %}
-</div>
-</body>
+  </div>
+  
+  <div class="app-container">
+    
+    <div class="p-4 md:p-6">
+        {% if urls|length > 0 %}
+          <div class="space-y-2">
+            {% for url in urls|reverse %}
+            <div class="url-card p-3 md:p-4 {% if url.expired %}expired{% endif %}">
+              <div class="mb-2.5">
+                <div class="url-label">Shortened Link</div>
+                <div class="flex items-center">
+                  <div class="url-wrapper">
+                    <a href="{{ url.short_url }}" target="_blank" class="url-text text-primary hover:text-primary-light text-sm font-medium">
+                      {{ url.short_url }}
+                    </a>
+                  </div>
+                  <button onclick="copyToClipboard('{{ url.short_url }}')" class="ml-1 p-1 hover:bg-gray-100 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <div class="url-label">Original URL</div>
+                <div class="original-url">{{ url.original_url }}</div>
+              </div>
+              
+              <div class="meta-info border-t pt-3 border-gray-100">
+                <div class="meta-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  <span>{{ url.visits }} visits</span>
+                </div>
+                
+                {% if url.expired %}
+                <span class="expired-badge">Expired</span>
+                {% else %}
+                <div class="meta-item">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span data-expiry-time="{{ url.expiration_time }}">Expires soon</span>
+                </div>
+                <span class="active-badge">Active</span>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="empty-state">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-muted-foreground opacity-50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <h3 class="text-lg font-medium mb-2">No links yet</h3>
+            <p class="max-w-sm mb-4">You haven't created any shortened links yet. Go back to the home page to create your first link.</p>
+            <a href="/" class="premium-button">
+              Create a Link
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
 
+  </div>
+
+  <div id="notification" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 hidden bg-white border border-gray-100 rounded-lg px-5 py-3 text-sm shadow-xl z-[99999]">
+    <div class="flex items-center space-x-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <span class="font-medium text-gray-700">Copied to clipboard</span>
+    </div>
+  </div>
+
+  <script>
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const notification = document.getElementById('notification');
+        notification.classList.remove('hidden');
+        notification.classList.add('notification-enter');
+        
+        setTimeout(() => {
+          notification.classList.add('opacity-0');
+          notification.style.transition = 'opacity 200ms ease-out';
+          setTimeout(() => {
+            notification.classList.remove('notification-enter', 'opacity-0');
+            notification.classList.add('hidden');
+            notification.style.transition = '';
+          }, 200);
+        }, 2000);
+      });
+    }
+    
+    function formatExpiryTime() {
+      const now = Math.floor(Date.now() / 1000);
+      const expiryElements = document.querySelectorAll('[data-expiry-time]');
+      
+      expiryElements.forEach(element => {
+        const expiryTime = parseFloat(element.dataset.expiryTime);
+        const isExpired = element.closest('.url-card').classList.contains('expired');
+        
+        if (isExpired) {
+          element.textContent = 'Expired';
+          return;
+        }
+        
+        const timeLeft = expiryTime - now;
+        
+        if (timeLeft < 0) {
+          element.textContent = 'Expired';
+          return;
+        }
+        
+        if (timeLeft < 60) {
+          element.textContent = `Expires in ${Math.floor(timeLeft)} seconds`;
+        } else if (timeLeft < 3600) {
+          element.textContent = `Expires in ${Math.floor(timeLeft / 60)} minutes`;
+        } else if (timeLeft < 86400) {
+          element.textContent = `Expires in ${Math.floor(timeLeft / 3600)} hours`;
+        } else if (timeLeft < 604800) {
+          element.textContent = `Expires in ${Math.floor(timeLeft / 86400)} days`;
+        } else if (timeLeft < 2592000) {
+          element.textContent = `Expires in ${Math.floor(timeLeft / 604800)} weeks`;
+        } else if (timeLeft < 31536000) {
+          element.textContent = `Expires in ${Math.floor(timeLeft / 2592000)} months`;
+        } else {
+          element.textContent = `Expires in ${Math.floor(timeLeft / 31536000)} years`;
+        }
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', formatExpiryTime);
+    
+    setInterval(formatExpiryTime, 60000);
+  </script>
+</body>
 </html>

@@ -1,65 +1,72 @@
-import json
-import os
+import hashlib
+import random
+import string
 import time
+from datetime import datetime, timedelta
+from typing import Dict, Tuple, List
 
-import shortuuid
-from flask import request
+from flask import request, current_app
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
-from wtforms.validators import URL
+from wtforms.validators import DataRequired, URL, Length
 
 from app.common.enums.url_prop import UrlProperties
-from app.configuration import DB_FILE, EXPIRE_LINKS_TIME_SEC
-from app.models.url import URLModel
+from app.configuration import DEFAULT_EXPIRATION_DAYS, MAX_URL_LENGTH, logging
+from app.db.database import save_url, get_url, increment_url_visit, get_user_urls as db_get_user_urls
 
 
 class ShortenForm(FlaskForm):
-    url = StringField('URL', render_kw={"placeholder": "Enter your URL"}, validators=[URL()])
+    url = StringField('URL', validators=[
+        DataRequired(),
+        URL(message="Invalid URL format"),
+        Length(max=MAX_URL_LENGTH, message=f"URL must be less than {MAX_URL_LENGTH} characters")
+    ])
     submit = SubmitField('Shorten')
 
 
-def load_urls():
-    if os.path.exists(DB_FILE):
-        with open(DB_FILE, 'r') as file:
-            try:
-                return json.load(file)
-            except json.JSONDecodeError:
-                return {}
+def generate_short_id(url: str) -> str:
+    timestamp = str(time.time())
+    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=5))
+    hash_input = url + timestamp + random_string
+    hash_object = hashlib.md5(hash_input.encode())
+    return hash_object.hexdigest()[:6]
+
+
+def shorten_url(url: str, user_token: str = None) -> Tuple[str, Dict]:
+    base_url = request.url_root
+    short_id = generate_short_id(url)
+    short_url = base_url + short_id
+    
+    expiration_time = time.time() + (DEFAULT_EXPIRATION_DAYS * 24 * 60 * 60)
+    
+    url_info = {
+        UrlProperties.ORIGINAL_URL.value: url,
+        UrlProperties.EXPIRED.value: False,
+        UrlProperties.VISITS.value: 0,
+        UrlProperties.CREATOR.value: user_token,
+        UrlProperties.EXPIRATION_TIME.value: expiration_time
+    }
+    
+    save_url(short_url, url_info)
+    logging.info(f"Created shortened URL {short_url} for {url}")
+    
+    return short_url, url_info
+
+
+def increment_visit_count(short_url: str) -> None:
+    if increment_url_visit(short_url):
+        logging.debug(f"Incremented visit count for {short_url}")
     else:
-        return {}
+        logging.warning(f"Failed to increment visit count for {short_url}")
 
 
-def save_urls(urls):
-    with open(DB_FILE, 'w') as file:
-        json.dump(urls, file, indent=2)
+def get_user_urls(user_token: str) -> List[Dict]:
+    return db_get_user_urls(user_token)
 
 
-def shorten_url(url):
-    short_id = shortuuid.uuid()[:8]
-    short_url = request.url_root + short_id
-
-    creator_identifier = request.remote_addr
-    return short_url, URLModel(False, 0, url, creator_identifier, time.time() + EXPIRE_LINKS_TIME_SEC).__dict__()
-
-
-def increment_visit_count(short_url, urls):
-    if short_url in urls:
-        urls[short_url][UrlProperties.VISITS.value] = urls[short_url].get(UrlProperties.VISITS.value, 0) + 1
-        save_urls(urls)
-
-
-def get_user_urls(urls):
-    creator_identifier = request.remote_addr
-    user_urls = {}
-    for url in urls:
-        if urls[url][UrlProperties.CREATOR.value] == creator_identifier:
-            expiration_time_value = urls[url][UrlProperties.EXPIRATION_TIME.value]
-            local_expiration_time = time.localtime(expiration_time_value)
-            formatted_expiration_time = time.strftime('%d/%m/%Y at %H:%M:%S', local_expiration_time)
-            urls[url][UrlProperties.EXPIRATION_TIME.value] = formatted_expiration_time
-            user_urls[url] = urls[url]
-    return dict(reversed(list(user_urls.items())))
-
-
-def has_user_urls(urls):
-    return len(get_user_urls(urls)) > 0
+def has_user_urls(user_token: str = None) -> bool:
+    if not user_token:
+        return False
+        
+    urls = get_user_urls(user_token)
+    return len(urls) > 0

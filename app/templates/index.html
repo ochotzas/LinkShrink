@@ -1,213 +1,1395 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" class="h-full overflow-x-hidden">
 <head>
-    <meta charset="UTF-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <title>LinkShrink - URL Shortener</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1f1f1f;
-            color: #ffffff;
-        }
+  <meta charset="UTF-8">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <meta name="description" content="LinkShrink - Free URL shortener service. Create custom short links for your websites.">
+  <meta name="keywords" content="URL shortener, link shortening, short links, LinkShrink, URL management">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="LinkShrink - URL Shortener">
+  <meta property="og:description" content="Create custom short links for your websites with LinkShrink - the free URL shortener service.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shrink.ochotzas.com/">
+  <link rel="canonical" href="https://shrink.ochotzas.com/">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <title>LinkShrink - URL Shortener | Create Short Links Easily</title>
+  <style>
+    :root {
+      --background: #f8f9fc;
+      --foreground: #374151;
+      --card: #ffffff;
+      --card-foreground: #1f2937;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #334155;
+      --muted: #e2e8f0;
+      --muted-foreground: #64748b;
+      --accent: #ede9fe;
+      --accent-foreground: #7c3aed;
+      --border: #e2e8f0;
+      --input: #f8fafc;
+      --ring: rgba(99, 102, 241, 0.5);
+      --gold: #d4a45f;
+      --gold-light: #e9c989;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      position: relative;
+      background-image: 
+        radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.03) 0%, transparent 45%);
+    }
+    
+    .premium-card {
+      background-color: var(--card);
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+    
+    .premium-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #6366f1);
+      opacity: 0.8;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .premium-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      height: 3rem;
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+      transition: all 0.2s ease;
+      position: relative;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+    }
+    
+    .premium-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(99, 102, 241, 0.35);
+    }
+    
+    .premium-input {
+      background-color: var(--input);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      font-size: 0.975rem;
+      line-height: 1.5rem;
+      padding: 0.85rem 1.25rem;
+      color: var(--foreground);
+      width: 100%;
+      box-shadow: var(--shadow-sm) inset;
+      transition: all 0.2s ease;
+    }
+    
+    .premium-input:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+    }
+    
+    .decorative-circle {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.03;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      pointer-events: none;
+    }
+    
+    .shimmer {
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .shimmer::after {
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      right: -100%;
+      bottom: -100%;
+      background: linear-gradient(
+        135deg,
+        transparent 0%,
+        transparent 25%,
+        rgba(255, 255, 255, 0.2) 45%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.2) 55%,
+        transparent 75%,
+        transparent 100%
+      );
+      animation: shimmerAnimation 4s infinite;
+      transform: rotate(25deg);
+    }
+    
+    @keyframes shimmerAnimation {
+      0% { transform: translateX(-200%) rotate(25deg); }
+      100% { transform: translateX(200%) rotate(25deg); }
+    }
+    
+    @keyframes floatAnimation {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(2deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    
+    .floating {
+      animation: floatAnimation 8s ease-in-out infinite;
+    }
 
-        .brand-color {
-            color: #e74c3c;
-        }
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+      50% { box-shadow: 0 0 20px 5px rgba(99, 102, 241, 0.2); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+    }
+    
+    .pulse-glow {
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+    
+    @keyframes slideUpAndFade {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 15px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+    
+    .notification-enter {
+      animation: slideUpAndFade 0.3s ease-out;
+    }
 
-        .bg-brand {
-            background-color: #e74c3c;
-        }
+    .copy-icon {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+    
+    .copy-icon:hover {
+      transform: scale(1.1);
+      color: var(--primary);
+    }
+    
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: -0.02em;
+    }
+    
+    .result-box {
+      background-color: var(--accent);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s ease;
+    }
+    
+    .result-box:hover {
+      box-shadow: var(--shadow-md);
+    }
+    
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 2rem 1rem;
+      padding-bottom: 3.5rem;
+      max-width: 42rem;
+      margin: 0 auto;
+      position: relative;
+      z-index: 10;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    
+    .truncate-text {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    
+    @media (max-width: 640px) {
+      .premium-card::before {
+        height: 4px;
+      }
+      
+      .premium-button {
+        width: 100%;
+        margin-top: 0.75rem;
+      }
+      
+      .app-container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+        padding-bottom: 4rem;
+      }
+      
+      .decorative-circle {
+        opacity: 0.02;
+      }
 
-        .info-text {
-            color: #bdc3c7;
-        }
+      /* Footer adjustments for mobile */
+      .footer-container {
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+      }
+    }
 
-        .input-group {
-            border: 1px solid #3a3a3a;
-        {% if short_url %}
-            border-radius: 8px 8px 0 0;
-        {% else %}
-            border-radius: 8px;
-        {% endif %}
-            overflow: hidden;
-        }
+    /* Enhanced Link Vault Styles */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      left: 0;
+      top: 100%;
+      min-width: 300px;
+      z-index: 50;
+      background-color: var(--card);
+      border-radius: 1rem;
+      box-shadow: var(--shadow-lg);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      margin-top: 0.75rem;
+      animation: dropdownEnter 0.3s ease;
+      transform-origin: top left;
+    }
+    
+    @keyframes dropdownEnter {
+      from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    .dropdown:hover .dropdown-content,
+    .dropdown:focus-within .dropdown-content,
+    .dropdown-content.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      padding: 0.875rem;
+      border-radius: 0.625rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      color: var(--foreground);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .dropdown-item:hover {
+      background-color: var(--accent);
+      transform: translateY(-1px);
+    }
+    
+    .dropdown-item:active {
+      transform: translateY(0);
+    }
+    
+    .dropdown-item svg {
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+      width: 1.125rem;
+      height: 1.125rem;
+    }
+    
+    .dropdown-divider {
+      height: 1px;
+      margin: 0.75rem 0;
+      background-color: var(--border);
+    }
+    
+    .vault-info {
+      background: linear-gradient(120deg, var(--accent), rgba(237, 233, 254, 0.4));
+      border-radius: 0.75rem;
+      padding: 1rem;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: var(--accent-foreground);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .input-group input {
-            width: 80%;
-            padding: 12px;
-            border: none;
-            outline: none;
-            background-color: #333;
-            color: #fff;
-        }
+    .vault-info-icon {
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.625rem;
+      background-color: rgba(124, 58, 237, 0.1);
+    }
+    
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      height: 1.375rem;
+      border-radius: 0.375rem;
+      padding-left: 0.625rem;
+      padding-right: 0.625rem;
+      background-color: var(--secondary);
+      color: var(--secondary-foreground);
+    }
+    
+    .badge-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+    
+    .identifier-display {
+      font-family: monospace;
+      background-color: rgba(255, 255, 255, 0.5);
+      border-radius: 0.5rem;
+      padding: 0.625rem;
+      font-size: 0.8rem;
+      color: var(--secondary-foreground);
+      overflow-x: auto;
+      max-width: 100%;
+      margin-top: 0.75rem;
+      white-space: nowrap;
+      border: 1px solid rgba(99, 102, 241, 0.1);
+      position: relative;
+    }
 
-        .input-group button {
-            width: 20%;
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            cursor: pointer;
-            border-radius: 0;
-        }
+    .identifier-prefix {
+      color: var(--accent-foreground);
+      font-weight: 600;
+      margin-right: 0.25rem;
+    }
+    
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.625rem 1rem;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .nav-btn::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 0;
+      background: linear-gradient(to bottom, rgba(99, 102, 241, 0.1), transparent);
+      transition: height 0.2s ease;
+    }
+    
+    .nav-btn:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    
+    .nav-btn:hover::after {
+      height: 100%;
+    }
+    
+    .nav-btn:active {
+      transform: translateY(0);
+    }
+    
+    .nav-btn-vault {
+      background-color: white;
+      color: var(--accent-foreground);
+      border-color: rgba(124, 58, 237, 0.2);
+    }
 
-        .shortened-link {
-            background-color: #333;
-            border-radius: 0 0 12px 12px;
-            padding: 16px;
-        }
+    .nav-btn-vault:hover {
+      border-color: var(--accent-foreground);
+    }
+    
+    .nav-btn svg {
+      margin-right: 0.5rem;
+      transition: transform 0.2s ease;
+    }
 
-        .copy-button {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            border-radius: 200px;
-            cursor: pointer;
-        }
+    .nav-btn:hover svg {
+      transform: scale(1.15);
+    }
+    
+    /* Enhanced modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(17, 24, 39, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+    
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .modal-content {
+      background-color: var(--card);
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow-xl);
+      max-width: 32rem;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: translateY(20px);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .modal.show .modal-content {
+      transform: translateY(0);
+    }
+    
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--border);
+    }
 
-        .copy-button:hover {
-            background-color: #c0392b;
-        }
+    .modal-header h3 {
+      font-weight: 600;
+      color: var(--card-foreground);
+      font-size: 1.125rem;
+      display: flex;
+      align-items: center;
+    }
 
-        .notification {
-            display: none;
-            background-color: #43a047;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            border-radius: 200px;
-            position: fixed;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-            animation: fadeIn 0.5s forwards;
-        }
+    .modal-header h3 svg {
+      margin-right: 0.75rem;
+      color: var(--accent-foreground);
+    }
+    
+    .modal-header button {
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      transition: all 0.2s;
+    }
+    
+    .modal-header button:hover {
+      background-color: var(--secondary);
+    }
+    
+    .modal-body {
+      padding: 1.5rem;
+    }
+    
+    .modal-footer {
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: 1rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+      background-color: var(--secondary);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .upload-area:hover {
+      border-color: var(--primary-light);
+      background-color: var(--accent);
+    }
+    
+    .upload-icon-container {
+      width: 4rem;
+      height: 4rem;
+      border-radius: 50%;
+      background: rgba(124, 58, 237, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem auto;
+      transition: all 0.3s;
+    }
+    
+    .upload-area:hover .upload-icon-container {
+      transform: scale(1.1);
+      background: rgba(124, 58, 237, 0.2);
+    }
+    
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      height: 2.75rem;
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+    
+    .btn-secondary {
+      background-color: var(--secondary);
+      color: var(--secondary-foreground);
+    }
+    
+    .btn-secondary:hover {
+      background-color: var(--muted);
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(99, 102, 241, 0.35);
+    }
 
-        .hero {
-            background-color: #1f1f1f;
-            color: #fff;
-            padding: 80px 0;
-            text-align: center;
-            border-bottom-left-radius: 12px;
-            border-bottom-right-radius: 12px;
-        }
+    .btn-primary:active {
+      transform: translateY(0);
+    }
 
-        .hero h1 {
-            font-size: 3rem;
-            font-weight: bold;
-            margin-bottom: 16px;
-        }
+    .btn svg {
+      margin-right: 0.5rem;
+    }
+    
+    .archive-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--accent-foreground);
+      margin-top: 0.75rem;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
 
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 24px;
-        }
+    .vault-tooltip {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      background-color: var(--card);
+      padding: 0.875rem 1rem;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      width: 250px;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s;
+      z-index: 30;
+      pointer-events: none;
+      transform: translateY(-10px);
+      color: var(--card-foreground);
+    }
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
+    .vault-tooltip::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 20px;
+      width: 12px;
+      height: 12px;
+      background-color: var(--card);
+      transform: rotate(45deg);
+      border-left: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+    }
+    
+    .link-vault-container:hover .vault-tooltip {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    
+    .nav-container {
+      position: fixed;
+      top: 1rem;
+      z-index: 20;
+      display: flex;
+      flex-direction: row;
+      gap: 0.75rem;
+    }
 
-            50% {
-                transform: scale(1.05);
-            }
+    .feature-pill {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.15rem 0.5rem;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-sm);
+      transform: rotate(5deg);
+      animation: pulseFeature 2s infinite;
+    }
 
-            100% {
-                transform: scale(1);
-            }
-        }
+    @keyframes pulseFeature {
+      0% { transform: scale(1) rotate(5deg); }
+      50% { transform: scale(1.1) rotate(5deg); }
+      100% { transform: scale(1) rotate(5deg); }
+    }
 
-        .cta-button span {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            align-items: center;
-        }
-    </style>
+    .vaultAnimation {
+      animation: vaultPulse 1s ease-out;
+    }
+
+    @keyframes vaultPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .steps-container {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(124, 58, 237, 0.2);
+    }
+
+    .step {
+      display: flex;
+      margin-bottom: 0.75rem;
+    }
+
+    .step-number {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      background-color: rgba(124, 58, 237, 0.1);
+      color: var(--accent-foreground);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-right: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .step-text {
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .security-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      margin-top: 1rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid rgba(124, 58, 237, 0.1);
+    }
+
+    .security-info svg {
+      flex-shrink: 0;
+      color: var(--primary);
+    }
+
+    .data-privacy-note {
+      font-size: 0.7rem;
+      color: var(--muted-foreground);
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .data-privacy-note svg {
+      color: var(--accent-foreground);
+    }
+
+    .security-warning {
+      margin-top: 1rem;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      background-color: rgba(254, 243, 199, 0.5);
+      border: 1px solid rgba(251, 191, 36, 0.3);
+      font-size: 0.75rem;
+      color: #92400e;
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+    }
+    
+    .security-warning svg {
+      flex-shrink: 0;
+      color: #f59e0b;
+      margin-top: 0.1rem;
+    }
+    
+    .security-warning p {
+      margin: 0;
+      line-height: 1.4;
+    }
+    
+    .security-warning strong {
+      font-weight: 600;
+    }
+
+    .identifier-display {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .identifier-copy-btn {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background-color: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: var(--accent-foreground);
+    }
+    
+    .identifier-copy-btn:hover {
+      background-color: var(--accent);
+      transform: translateY(-50%) scale(1.1);
+    }
+    
+    .identifier-copy-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+    
+    .identifier-content {
+      padding-right: 30px;
+      width: 100%;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .footer-container {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 0.75rem;
+      background-color: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--border);
+      z-index: 10;
+      text-align: center;
+    }
+    
+    .footer-text {
+      font-size: 0.75rem;
+      color: var(--muted-foreground);
+      line-height: 1.5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+
+    .footer-heart {
+      color: #e11d48;
+      display: inline-block;
+      transform: translateY(1px);
+      margin: 0 0.15rem;
+    }
+    
+    .author-name {
+      font-weight: 500;
+      color: var(--accent-foreground);
+      transition: all 0.2s ease;
+    }
+    
+    .author-name:hover {
+      color: var(--primary);
+    }
+
+    .app-container {
+      padding-bottom: 3.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .app-container {
+        padding-bottom: 4rem;
+      }
+    }
+
+    #notification {
+      z-index: 50;
+      bottom: 4rem;
+    }
+  </style>
 </head>
 
-<body>
-<div class="hero">
-    <h1 class="text-3xl font-semibold brand-color mb-6">
-        LinkShrink <i class="fas fa-link"></i>
-    </h1>
-    <p class="text-lg info-text mb-4">
-        The coolest way to shrink your links and share them hassle-free!<br/>No account needed, just shrink and go!
-    </p>
-</div>
-
-<div class="p-8 max-w-xl mx-auto mt-12">
-    <form method="post">
-        {{ form.hidden_tag() }}
-        <div class="input-group flex">
-            {{ form.url(class="flex-grow p-3 text-white placeholder-gray-500 bg-gray-700 border border-gray-600
-            focus:outline-none focus:shadow-outline") }}
-            <button class="bg-brand text-white py-3 px-4 border border-gray-600 rounded-r-md focus:outline-none focus:shadow-outline hover:bg-gray-600 transition-colors duration-300"
-                    type="submit">
-                <i class="fas fa-compress"></i>
+<body class="antialiased h-full">
+  <div class="decorative-circle" style="width: 300px; height: 300px; top: -100px; right: -50px;"></div>
+  <div class="decorative-circle" style="width: 350px; height: 350px; bottom: -100px; left: -100px;"></div>
+  
+  <div class="nav-container left-6">
+    <div class="link-vault-container">
+      <button class="nav-btn nav-btn-vault" id="linkVaultBtn" aria-expanded="false" aria-haspopup="true">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+        </svg>
+        <span>Vault</span>
+      </button>
+      
+      <div class="vault-tooltip">
+        <strong class="block mb-1">Vault: Your Secure Link Manager</strong>
+        Download, backup, or transfer your shortened links between devices with end-to-end security.
+      </div>
+      
+      <div class="dropdown-content" id="linkVaultDropdown">
+        <div class="vault-info mb-3">
+          <div class="vault-info-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </div>
+          <h4 class="font-semibold text-accent-foreground mb-1">Your Secure Vault</h4>
+          <p>Access your shortened links across devices with this unique identifier.</p>
+          
+          <div class="identifier-display">
+            <div class="identifier-content">
+              <span class="identifier-prefix">ID:</span>
+              <span id="currentIdentifier">Loading...</span>
+            </div>
+            <button class="identifier-copy-btn" onclick="copyIdentifier()" title="Copy identifier">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
             </button>
-        </div>
-    </form>
+          </div>
+          
+          <div class="archive-status">
+            <span class="badge badge-primary">Active</span>
+            <span id="urlCount">Loading...</span>
+          </div>
 
-    {% if short_url %}
-    <div class="shortened-link p-6">
-        <p class="text-white text-lg mb-2">
-            <span class="brand-color">Awesome!</span> Your link has been transformed:
+          <div class="steps-container">
+            <div class="step">
+              <div class="step-number">1</div>
+              <div class="step-text">Download your vault to create a secure backup</div>
+            </div>
+            <div class="step">
+              <div class="step-number">2</div>
+              <div class="step-text">Upload on any device to restore all your links</div>
+            </div>
+          </div>
+
+        </div>
+        
+        <div class="dropdown-item" onclick="downloadIdentifier()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+          </svg>
+          <span>Download Vault</span>
+        </div>
+        
+        <div class="dropdown-item" onclick="openUploadModal()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+          </svg>
+          <span>Upload Vault</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% if has_user_urls %}
+  <div class="nav-container right-6 hidden md:block">
+    <a href="/user" class="nav-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      <span>History</span>
+    </a>
+  </div>
+  {% endif %}
+
+  <div class="modal" id="uploadModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+          </svg>
+          Upload Your Vault
+        </h3>
+        <button class="text-muted-foreground" onclick="closeUploadModal()" aria-label="Close">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p class="text-sm text-muted-foreground mb-5">
+          Restore all your shortened URLs by uploading your vault file or pasting your unique identifier.
         </p>
-        <div class="flex flex-wrap items-center mb-4">
-            <a class="break-all text-gray-400 text-lg hover:text-gray-300" href="{{ short_url }}">
-                <i class="fas fa-link text-gray-400 mr-2"></i>
-                {{ short_url }}
-            </a>
-            <button class="copy-button bg-white text-brand py-3 px-4 rounded-md focus:outline-none focus:shadow-outline left-0 ml-auto hover:bg-gray-600 transition-colors duration-300"
-                    onclick="copyToClipboard('{{ short_url }}')" type="button">
-                <i class="far fa-copy mr-2"></i> Copy
+        
+        <div class="upload-area mb-5" id="dropArea" onclick="document.getElementById('fileInput').click()">
+          <input type="file" id="fileInput" accept=".lsi" style="display: none" onchange="handleFileSelect(event)" />
+          <div class="upload-icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-accent-foreground opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            </svg>
+          </div>
+          <p class="font-medium text-sm mb-1">Drop your .lsi file here</p>
+          <p class="text-xs text-muted-foreground">or click to browse your files</p>
+        </div>
+        
+        <div class="border-t border-gray-100 pt-4 mt-4">
+          <label class="block text-sm font-medium mb-2">Or paste your identifier directly:</label>
+          <textarea id="identifierInput" class="premium-input h-24 resize-none" placeholder="Paste your identifier here..."></textarea>
+          
+          <div class="security-warning">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            </svg>
+            <div>
+              <p><strong>Security Note:</strong> You can create your own custom identifier, but this is not recommended.</p>
+              <p class="mt-1">Custom identifiers may be easier to guess, potentially allowing others to access your links. For best security, use the system-generated identifiers or downloaded vault files.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <div class="text-xs text-muted-foreground flex items-center gap-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-primary">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+            </svg>
+            <span>Your vault is encrypted and only accessible with your unique identifier</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeUploadModal()">
+          Cancel
+        </button>
+        <button class="btn btn-primary" onclick="uploadIdentifier()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Apply Vault
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="app-container">
+    <div class="mb-12 text-center w-full">
+      <div class="inline-block p-4 bg-white rounded-full mb-8 shadow-lg pulse-glow">
+        <svg class="w-12 h-12 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold mb-3 tracking-tight logo-text">
+        Link<span class="gradient-text">Shrink</span>
+      </h1>
+      <p class="text-muted-foreground text-sm md:text-base max-w-md mx-auto">
+        Transform your lengthy URLs into elegant, shareable links
+      </p>
+    </div>
+
+    <div class="premium-card w-full mb-10">
+      <div class="p-4 md:p-8">
+        <form method="post" class="space-y-4">
+          {{ form.hidden_tag() }}
+          <div class="flex flex-col md:flex-row md:space-x-3">
+            {{ form.url(class="premium-input flex-grow", placeholder="Enter your URL to shorten...") }}
+            <button type="submit" class="premium-button flex items-center justify-center" aria-label="Shorten URL">
+              <span>Shorten</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+              </svg>
             </button>
-        </div>
-        <div class="notification" id="notification">
-            Copied to Clipboard! <i class="fas fa-check-circle"></i>
-        </div>
-    </div>
-    {% endif %}
+          </div>
+        </form>
+      </div>
 
-    {% if has_user_urls %}
-    <div class="fixed top-0 right-0 m-8">
-        <a class="bg-brand text-white py-3 px-6 rounded-full text-lg focus:outline-none focus:shadow-outline hover:bg-gray-600 transition-colors duration-300"
-           href="/user">
-            <i class="fas fa-list mr-2"></i> Shortened
-        </a>
+      {% if short_url %}
+      <div class="border-t border-gray-100">
+        <div class="p-4 md:p-8 space-y-6">
+          <div class="flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            <h3 class="text-sm font-medium text-secondary-foreground">Your shortened link is ready</h3>
+          </div>
+          
+          <div class="result-box p-4 relative shimmer">
+            <div class="flex items-center justify-between">
+              <a href="{{ short_url }}" class="text-primary hover:text-primary-light transition-colors truncate-text mr-3 font-medium">
+                {{ short_url }}
+              </a>
+              <button onclick="copyToClipboard('{{ short_url }}')" class="copy-icon p-2 rounded-full hover:bg-muted transition-colors focus:outline-none bg-white shadow-sm flex-shrink-0" aria-label="Copy to clipboard">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          
+          <div class="flex justify-center">
+            <span class="bg-secondary text-xs text-muted-foreground px-4 py-1.5 rounded-full inline-flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Share anywhere with confidence
+            </span>
+          </div>
+        </div>
+      </div>
+      {% endif %}
     </div>
-    {% endif %}
-</div>
+    
+    <div class="flex flex-wrap items-center justify-center gap-3 md:gap-6 mt-6">
+      <div class="flex items-center text-muted-foreground text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+        </svg>
+        <span>Fast</span>
+      </div>
+      <div class="hidden md:block h-1 w-1 rounded-full bg-muted opacity-70"></div>
+      <div class="flex items-center text-muted-foreground text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <span>Secure</span>
+      </div>
+      <div class="hidden md:block h-1 w-1 rounded-full bg-muted opacity-70"></div>
+      <div class="flex items-center text-muted-foreground text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span>Reliable</span>
+      </div>
+    </div>
+  </div>
 
-<script>
+  <div id="notification" class="fixed bottom-8 left-1/2 transform -translate-x-1/2 hidden bg-white border border-gray-100 rounded-lg px-5 py-3 text-sm shadow-xl">
+    <div class="flex items-center space-x-3">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      <span class="font-medium text-gray-700">Copied to clipboard</span>
+    </div>
+  </div>
+
+  <script>
     function copyToClipboard(text) {
-        var textArea = document.createElement("textarea");
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-
+      navigator.clipboard.writeText(text).then(() => {
         const notification = document.getElementById('notification');
-        notification.style.display = 'block';
-
-        setTimeout(function () {
-            notification.style.animation = 'fadeOut 0.5s forwards';
-            setTimeout(function () {
-                notification.style.display = 'none';
-                notification.style.animation = 'none';
-            }, 500);
-        }, 3000);
+        notification.classList.remove('hidden');
+        notification.classList.add('notification-enter');
+        
+        setTimeout(() => {
+          notification.classList.add('opacity-0');
+          notification.style.transition = 'opacity 200ms ease-out';
+          setTimeout(() => {
+            notification.classList.add('hidden');
+            notification.classList.remove('opacity-0', 'notification-enter');
+            notification.style.transition = '';
+          }, 200);
+        }, 2000);
+      });
     }
-</script>
-</body>
+    
+    document.addEventListener('DOMContentLoaded', function() {
+      loadIdentifierAndCount();
+      setupDropArea();
+      
+      document.getElementById('linkVaultBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const dropdown = document.getElementById('linkVaultDropdown');
+        dropdown.classList.toggle('show');
+        
+        if (dropdown.classList.contains('show')) {
+          this.classList.add('vaultAnimation');
+          setTimeout(() => {
+            this.classList.remove('vaultAnimation');
+          }, 1000);
+        }
+      });
+      
+      document.addEventListener('click', function() {
+        document.getElementById('linkVaultDropdown').classList.remove('show');
+      });
+      
+      document.getElementById('linkVaultDropdown').addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      
+      if (!localStorage.getItem('vaultIntroSeen')) {
+        setTimeout(() => {
+          document.getElementById('linkVaultBtn').click();
+          localStorage.setItem('vaultIntroSeen', 'true');
+          
+          setTimeout(() => {
+            if (document.getElementById('linkVaultDropdown').classList.contains('show')) {
+              document.getElementById('linkVaultBtn').click();
+            }
+          }, 5000);
+        }, 1000);
+      }
+    });
+    
+    function loadIdentifierAndCount() {
+      const identifier = getCookie('identifier') || 'No identifier found';
+      
+      const identifierElement = document.getElementById('currentIdentifier');
+      
+      if (identifier.length > 20) {
+        const start = identifier.substring(0, 8);
+        const end = identifier.substring(identifier.length - 8);
+        identifierElement.textContent = `${start}...${end}`;
+        identifierElement.title = identifier;
+      } else {
+        identifierElement.textContent = identifier;
+      }
+      
+      fetch('/api/url-count')
+        .then(response => response.json())
+        .then(data => {
+          const urlCount = data.count;
+          document.getElementById('urlCount').textContent = urlCount + (urlCount === 1 ? ' link saved' : ' links saved');
+        })
+        .catch(error => {
+          console.error('Error fetching URL count:', error);
+          document.getElementById('urlCount').textContent = '0 links saved';
+        });
+    }
+    
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+    
+    function downloadIdentifier() {
+      const identifier = getCookie('identifier');
+      if (!identifier) {
+        alert('No identifier found to download');
+        return;
+      }
+      
+      const blob = new Blob([identifier], { type: 'text/plain' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'my_link_vault.lsi';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      showNotification('Link vault downloaded successfully');
+    }
+    
+    function openUploadModal() {
+      document.getElementById('uploadModal').classList.add('show');
+    }
+    
+    function closeUploadModal() {
+      document.getElementById('uploadModal').classList.remove('show');
+      document.getElementById('identifierInput').value = '';
+      document.getElementById('fileInput').value = '';
+    }
+    
+    function setupDropArea() {
+      const dropArea = document.getElementById('dropArea');
+      
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, highlight, false);
+      });
+      
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        dropArea.classList.add('border-primary');
+      }
+      
+      function unhighlight() {
+        dropArea.classList.remove('border-primary');
+      }
+      
+      dropArea.addEventListener('drop', handleDrop, false);
+    }
+    
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      handleFiles(files);
+    }
+    
+    function handleFileSelect(e) {
+      const files = e.target.files;
+      handleFiles(files);
+    }
+    
+    function handleFiles(files) {
+      if (files.length) {
+        const file = files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          document.getElementById('identifierInput').value = e.target.result;
+        };
+        reader.readAsText(file);
+      }
+    }
+    
+    function uploadIdentifier() {
+      const identifier = document.getElementById('identifierInput').value.trim();
+      if (!identifier) {
+        alert('Please enter an identifier or upload a file');
+        return;
+      }
+      
+      document.cookie = `identifier=${identifier}; path=/; max-age=31536000`; // 1 year
+      
+      showNotification('Link vault applied successfully! Reloading...');
+      setTimeout(() => window.location.reload(), 1500);
+    }
+    
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      const content = notification.querySelector('span');
+      content.textContent = message;
+      
+      notification.classList.remove('hidden');
+      notification.classList.add('notification-enter');
+      
+      setTimeout(() => {
+        notification.classList.add('opacity-0');
+        notification.style.transition = 'opacity 200ms ease-out';
+        setTimeout(() => {
+          notification.classList.add('hidden');
+          notification.classList.remove('opacity-0', 'notification-enter');
+          notification.style.transition = '';
+        }, 200);
+      }, 2000);
+    }
 
+    function copyIdentifier() {
+      const identifier = getCookie('identifier');
+      if (!identifier) {
+        showNotification('No identifier found', 'error');
+        return;
+      }
+      
+      copyToClipboard(identifier);
+      showNotification('Identifier copied to clipboard');
+      
+      const copyBtn = document.querySelector('.identifier-copy-btn');
+      copyBtn.style.backgroundColor = 'rgba(124, 58, 237, 0.2)';
+      setTimeout(() => {
+        copyBtn.style.backgroundColor = '';
+      }, 500);
+    }
+  </script>
+</body>
 </html>

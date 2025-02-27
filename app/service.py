@@ -1,59 +1,72 @@
 import heapq
 import threading
 import time
-from threading import Timer
+import logging
 
 from app.common.enums.url_prop import UrlProperties
 from app.configuration import EXPIRE_LINKS_CHECK_TIME_SEC
-from app.configuration import logging
-from app.utils.shorten import load_urls, save_urls
-
-
-def expire_links():
-    logging.info("Expiration thread started.")
-    with urls_lock:
-        current_time = time.time()
-        logging.debug(f"Current time: {current_time}")
-
-        while expiration_heap and expiration_heap[0][0] <= current_time:
-            expiration_time, short_url = heapq.heappop(expiration_heap)
-            logging.debug(f"Link to expire: {short_url}, Expiration time: {expiration_time}")
-
-            urls = load_urls()
-            if short_url in urls:
-                urls[short_url][UrlProperties.EXPIRED.value] = True
-                save_urls(urls)
-                logging.info(f"Link expired: {short_url}")
-            else:
-                logging.warning(f"Attempting to expire non-existent link: {short_url}")
-
-        next_expiration_time = current_time + EXPIRE_LINKS_CHECK_TIME_SEC
-        logging.debug(f"Scheduling next expiration check at: {next_expiration_time}")
-        Timer(EXPIRE_LINKS_CHECK_TIME_SEC, expire_links).start()
-
-
-def check_missed_expirations():
-    logging.info("Missed expirations thread started.")
-    with urls_lock:
-        current_time = time.time()
-        logging.debug(f"Current time: {current_time}")
-
-        urls = load_urls()
-        for short_url, properties in urls.items():
-            expiration_time = properties.get(UrlProperties.EXPIRATION_TIME.value, 0)
-
-            if expiration_time <= current_time and not properties.get(UrlProperties.EXPIRED.value, False):
-                properties[UrlProperties.EXPIRED.value] = True
-                save_urls(urls)
-                logging.info(f"Missed expiration for link: {short_url}")
-
-        next_expiration_time = current_time + EXPIRE_LINKS_CHECK_TIME_SEC
-        logging.debug(f"Scheduling next missed expiration check at: {next_expiration_time}")
-        Timer(EXPIRE_LINKS_CHECK_TIME_SEC, check_missed_expirations).start()
-
+from app.db.database import get_expiration_heap, expire_url, update_url_status
 
 urls_lock = threading.Lock()
 expiration_heap = []
 
-Timer(EXPIRE_LINKS_CHECK_TIME_SEC, expire_links).start()
-Timer(EXPIRE_LINKS_CHECK_TIME_SEC, check_missed_expirations).start()
+def init_expiration_heap():
+    global expiration_heap
+    with urls_lock:
+        raw_heap = get_expiration_heap()
+        expiration_heap = raw_heap.copy() if raw_heap else []
+        heapq.heapify(expiration_heap)
+    logging.info(f"Initialized expiration heap with {len(expiration_heap)} URLs")
+
+def process_expirations():
+    current_time = time.time()
+    expired_count = 0
+
+    with urls_lock:
+        while expiration_heap and expiration_heap[0][0] <= current_time:
+            expiration_time, short_url = heapq.heappop(expiration_heap)
+            if expire_url(short_url):
+                update_url_status(short_url, "expired")
+                logging.info(f"Expired URL: {short_url}")
+                expired_count += 1
+
+    if expired_count:
+        logging.info(f"Total expired URLs in this check: {expired_count}")
+
+def expiration_worker():
+    while True:
+        process_expirations()
+        time.sleep(EXPIRE_LINKS_CHECK_TIME_SEC)
+
+def missed_expiration_worker():
+    MISS_CHECK_INTERVAL = EXPIRE_LINKS_CHECK_TIME_SEC * 10
+    while True:
+        current_time = time.time()
+        expired_count = 0
+        with urls_lock:
+            new_heap = []
+            while expiration_heap:
+                expiration_time, short_url = heapq.heappop(expiration_heap)
+                if expiration_time <= current_time:
+                    if expire_url(short_url):
+                        update_url_status(short_url, "expired")
+                        logging.info(f"Found and expired missed URL: {short_url}")
+                        expired_count += 1
+                else:
+                    new_heap.append((expiration_time, short_url))
+            expiration_heap.extend(new_heap)
+            heapq.heapify(expiration_heap)
+        if expired_count:
+            logging.info(f"Total missed expirations handled: {expired_count}")
+        time.sleep(MISS_CHECK_INTERVAL)
+
+def start_expiration_services():
+    init_expiration_heap()
+
+    expiration_thread = threading.Thread(target=expiration_worker, daemon=True)
+    expiration_thread.start()
+
+    missed_thread = threading.Thread(target=missed_expiration_worker, daemon=True)
+    missed_thread.start()
+
+    logging.info("URL expiration services started")

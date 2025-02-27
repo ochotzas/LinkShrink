@@ -1,157 +1,263 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full overflow-x-hidden">
 <head>
-    <meta charset="UTF-8">
-    <meta content="3;url={{ original_url }}" http-equiv="refresh">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1f1f1f; /* Dark Gray */
-            color: #ffffff; /* White */
-            text-align: center;
-            padding: 80px 20px;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh; /* Ensure full height */
-        }
-
-        a {
-            color: #e74c3c; /* Red */
-            text-decoration: none;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .rotate {
-            font-size: 2rem;
-            margin-right: 10px;
-            animation: rotate 2s infinite linear;
-        }
-
-        p {
-            font-size: 1.5rem;
-            margin-top: 20px;
-            animation: pulse 2s infinite;
-        }
-
-        .brand-color {
-            color: #e74c3c; /* Red */
-        }
-
-        /* Animation */
-        @keyframes fadeIn {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        @keyframes rotate {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        /* Glowing Link Animation */
-        @keyframes glow {
-            0% {
-                color: #e74c3c;
-                text-shadow: 0 0 10px #e74c3c, 0 0 20px #e74c3c, 0 0 30px #e74c3c;
-            }
-            50% {
-                color: #ffffff;
-                text-shadow: none;
-            }
-            100% {
-                color: #e74c3c;
-                text-shadow: 0 0 10px #e74c3c, 0 0 20px #e74c3c, 0 0 30px #e74c3c;
-            }
-        }
-
-        .glow-link {
-            animation: glow 1s infinite;
-        }
-
-        /* Stylish visit count for the creator */
-        @keyframes fadeInUp {
-            0% {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .visit-count {
-            margin-top: auto;
-            opacity: 0;
-            animation: fadeInUp 1s forwards;
-        }
-
-        .visit-count div {
-            background-color: #2f2f2f; /* Darker Gray */
-            padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .visit-count i {
-            margin-right: 5px;
-        }
-    </style>
-    <title>Redirecting...</title>
+  <meta charset="UTF-8">
+  <meta content="3;url={{ original_url }}" http-equiv="refresh">
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+  <meta name="robots" content="noindex, nofollow">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <title>LinkShrink - Redirecting...</title>
+  <style>
+    :root {
+      --background: #f8f9fc;
+      --foreground: #374151;
+      --card: #ffffff;
+      --card-foreground: #1f2937;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --secondary: #f1f5f9;
+      --secondary-foreground: #334155;
+      --muted: #e2e8f0;
+      --muted-foreground: #64748b;
+      --accent: #ede9fe;
+      --accent-foreground: #7c3aed;
+      --border: #e2e8f0;
+      --input: #f8fafc;
+      --ring: rgba(99, 102, 241, 0.5);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+    }
+    
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background-image: 
+        radial-gradient(circle at 15% 85%, rgba(99, 102, 241, 0.03) 0%, transparent 40%),
+        radial-gradient(circle at 85% 15%, rgba(124, 58, 237, 0.03) 0%, transparent 45%);
+    }
+    
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: -0.02em;
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .decorative-circle {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      opacity: 0.03;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      pointer-events: none;
+    }
+    
+    .redirect-card {
+      background-color: var(--card);
+      border-radius: 1.25rem;
+      box-shadow: var(--shadow-xl);
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      max-width: 36rem;
+      width: 90%;
+      text-align: center;
+      padding: 2rem 1.25rem;
+      margin: 0 1rem;
+    }
+    
+    .redirect-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #6366f1, #8b5cf6, #6366f1);
+      opacity: 0.8;
+    }
+    
+    .truncate-text {
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+      50% { box-shadow: 0 0 20px 5px rgba(99, 102, 241, 0.2); }
+      100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.1); }
+    }
+    
+    .pulse-glow {
+      animation: pulseGlow 2s ease-in-out infinite;
+    }
+    
+    .spinner {
+      border-radius: 50%;
+      box-sizing: border-box;
+      border: 3px solid transparent;
+      border-top-color: var(--primary);
+      border-bottom-color: var(--primary);
+      animation: spin 1s linear infinite;
+    }
+    
+    .redirect-indicator {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 2rem 0;
+    }
+    
+    .redirect-indicator div {
+      width: 8px;
+      height: 8px;
+      margin: 0 0.25rem;
+      border-radius: 50%;
+      background-color: var(--muted);
+      opacity: 0;
+      animation: fadeInOut 1.5s infinite;
+    }
+    
+    .redirect-indicator div:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    
+    .redirect-indicator div:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    
+    @keyframes fadeInOut {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 1; }
+    }
+    
+    .stats-card {
+      background-color: var(--accent);
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      padding: 0.75rem 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      margin-top: 1.5rem;
+      animation: fadeIn 0.5s ease-in-out forwards;
+    }
+    
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      background: linear-gradient(to right, var(--primary-light), var(--primary));
+      width: 0%;
+      animation: progress 3s linear forwards;
+      z-index: 100;
+    }
+    
+    @keyframes progress {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+    
+    @media (max-width: 640px) {
+      .redirect-card {
+        padding: 2rem 1rem;
+      }
+      
+      .decorative-circle {
+        opacity: 0.02;
+      }
+    }
+  </style>
 </head>
-<body>
-<h1 class="text-5xl font-bold brand-color animated-text"><i class="fas fa-link rotate"></i>&nbsp;LinkShrink</h1>
-<p class="brand-color animated-text">
-    Redirecting to <a class="glow-link" href="{{ original_url }}">{{ original_url[:24] + '...' }}</a>
-</p>
 
-<!-- Stylish visit count for the creator -->
-{% if is_creator %}
-<div class="visit-count">
-    <div>
-        <i class="fas fa-eye brand-color"></i>
-        <span class="font-bold text-white">&nbsp;Visit Count:&nbsp;</span> {{ visit_count }}
+<body class="antialiased h-full">
+  <div class="decorative-circle" style="width: 300px; height: 300px; top: -100px; right: -50px;"></div>
+  <div class="decorative-circle" style="width: 350px; height: 350px; bottom: -100px; left: -100px;"></div>
+  
+  <div class="progress-bar"></div>
+  
+  <div class="redirect-card">
+    <div class="flex justify-center mb-6">
+      <div class="p-4 bg-white rounded-full shadow-lg pulse-glow relative">
+        <div class="spinner absolute inset-0 m-auto w-full h-full"></div>
+        <svg class="w-10 h-10 text-primary relative z-10" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </div>
     </div>
-</div>
-{% endif %}
+    
+    <h1 class="text-2xl md:text-3xl font-bold mb-2 logo-text">
+      Link<span class="gradient-text">Shrink</span>
+    </h1>
+    
+    <div class="redirect-indicator">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+    
+    <p class="text-muted-foreground mb-3">Redirecting you to</p>
+    
+    <div class="bg-secondary p-3 rounded-lg mb-4">
+      <a href="{{ original_url }}" class="text-primary hover:text-primary-light font-medium truncate-text max-w-full block">
+        {{ original_url }}
+      </a>
+    </div>
+    
+    <p class="text-xs text-muted-foreground">
+      You'll be redirected in 3 seconds. Click the link above if you aren't redirected automatically.
+    </p>
+    
+    {% if is_creator %}
+    <div class="flex justify-center">
+      <div class="stats-card">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-accent-foreground mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <div class="text-left">
+          <p class="text-xs text-muted-foreground">Total Visits</p>
+          <p class="text-sm font-medium text-secondary-foreground">{{ visit_count }}</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
 </body>
 </html>

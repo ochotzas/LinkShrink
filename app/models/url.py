@@ -1,24 +1,36 @@
-from ModelSerializer import ModelSerializer
+from sqlalchemy import Column, String, Boolean, Integer, Float
+from sqlalchemy.ext.declarative import declarative_base
 
 from app.common.enums.url_prop import UrlProperties
 
+Base = declarative_base()
 
-class URLModel:
-    def __init__(self, expired: bool, visits: int, original_url: str, creator: str, expiration_time: float):
-        self.expired = expired
-        self.visits = visits
-        self.original_url = original_url
-        self.creator = creator
-        self.expiration_time = expiration_time
+class URLModel(Base):
+    __tablename__ = 'urls'
 
-    def __dict__(self):
+    short_url = Column(String, primary_key=True)
+    original_url = Column(String, nullable=False)
+    expired = Column(Boolean, default=False)
+    visits = Column(Integer, default=0)
+    creator = Column(String)
+    expiration_time = Column(Float, nullable=False)
+
+    def to_dict(self):
         return {
+            UrlProperties.ORIGINAL_URL.value: self.original_url,
             UrlProperties.EXPIRED.value: self.expired,
             UrlProperties.VISITS.value: self.visits,
-            UrlProperties.ORIGINAL_URL.value: self.original_url,
             UrlProperties.CREATOR.value: self.creator,
             UrlProperties.EXPIRATION_TIME.value: self.expiration_time
         }
 
-    def to_json(self):
-        return ModelSerializer(self).to_json()
+    @classmethod
+    def from_dict(cls, short_url, url_info):
+        return cls(
+            short_url=short_url,
+            original_url=url_info.get(UrlProperties.ORIGINAL_URL.value),
+            expired=url_info.get(UrlProperties.EXPIRED.value, False),
+            visits=url_info.get(UrlProperties.VISITS.value, 0),
+            creator=url_info.get(UrlProperties.CREATOR.value),
+            expiration_time=url_info.get(UrlProperties.EXPIRATION_TIME.value)
+        )
