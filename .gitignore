@@ -180,4 +180,4 @@ cython_debug/
 *.tar
 
 # Data files
-.sqlite3
+*.sqlite

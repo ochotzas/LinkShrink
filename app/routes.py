@@ -1,4 +1,5 @@
 import heapq
+import secrets
 
 from flask import render_template, request, abort, make_response, jsonify
 
@@ -79,6 +80,16 @@ def get_url_count():
     url_count = len(user_urls) if user_urls else 0
     
     return jsonify({'count': url_count})
+
+
+@app.route('/api/reset-identifier', methods=['POST'])
+def reset_identifier():
+    new_token = secrets.token_hex(16)
+    
+    response = make_response(jsonify({'success': True, 'message': 'Identifier reset successfully'}))
+    response.set_cookie(TOKEN_COOKIE_NAME, new_token, max_age=31536000)
+    
+    return response
 
 
 @app.errorhandler(404)
