@@ -15,30 +15,14 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: ghcr.io/${{ github.repository }}
-          tags: |
-            type=semver,pattern={{version}}
-            type=ref,event=tag
-
-      - name: Build and push
+      - name: Build Docker image
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          push: false
+          load: true
+          tags: linkshrink:${{ github.ref_name }}
 
       - name: Setup Tailscale
         uses: tailscale/github-action@v2
@@ -46,17 +30,32 @@ jobs:
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
           version: latest
 
-      - name: Deploy to server
+      - name: Save Docker image
+        run: |
+          docker save -o linkshrink.tar linkshrink:${{ github.ref_name }}
+          ls -la linkshrink.tar
+
+      - name: Transfer and deploy image
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.TAILSCALE_SERVER_NAME }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "linkshrink.tar"
+          target: "/tmp"
+
+      - name: Deploy on server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.TAILSCALE_SERVER_NAME }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ghcr.io/${{ github.repository }}:${GITHUB_REF#refs/tags/}
+            docker load -i /tmp/linkshrink.tar
             docker stop linkshrink || true
             docker rm linkshrink || true
             docker run -d -p 3200:5000 --name linkshrink \
               -v /opt/linkshrink:/app/app/data/ \
               --restart always \
-              ghcr.io/${{ github.repository }}:${GITHUB_REF#refs/tags/}
+              linkshrink:${{ github.ref_name }}
+            rm /tmp/linkshrink.tar
