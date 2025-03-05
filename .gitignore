@@ -181,3 +181,9 @@ cython_debug/
 
 # Data files
 *.sqlite
+
+# Deploy
+DEPLOY.md
+
+# MacOs
+.DS_Store
